@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "overwatch-py"
+version = "0.1.0"
+description = "Async Python client for the OverFast API (Overwatch data)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "httpx>=0.27",
+    "httpx-retries>=0.3",
+    "pydantic>=2.5",
+    "hishel>=0.0.30",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "respx>=0.21",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["overwatch_py"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "live: hits the real OverFast API — requires network and is rate-limited; run with `-m live`",
+]
+# By default skip live tests; opt-in via `pytest -m live` (or `-m 'live or not live'` to run all).
+addopts = "-m 'not live'"
