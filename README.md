@@ -1,12 +1,14 @@
-# overwatch-py
+# overfast-client
 
 Async Python client for the [OverFast API](https://overfast-api.tekrop.fr) — comprehensive Overwatch data (heroes, maps, gamemodes, player stats) via a typed, pydantic-backed interface.
 
 ## Install
 
 ```bash
-pip install overwatch-py
+pip install overfast-client
 ```
+
+> The PyPI distribution is `overfast-client`; the import name is `overwatch_py`.
 
 Or from source (editable):
 
