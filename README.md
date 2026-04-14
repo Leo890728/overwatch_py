@@ -109,6 +109,43 @@ Exposed on `Client`:
 
 The underlying services (`client.heros`, `client.maps`, `client.players`) are also available if you prefer service-level access.
 
+### Career stats: flat vs. with labels
+
+Two shapes are available for the same underlying data:
+
+```python
+from overwatch_py.enums import Hero, PlayerGamemode
+
+# Flat: {hero_key: {category: {stat_label: value}}} — best for lookups
+flat = await client.get_player_career_stats(
+    "TeKrop-2217", gamemode=PlayerGamemode.COMPETITIVE, hero=Hero.ANA,
+)
+eliminations = flat["ana"].combat["eliminations"]
+
+# With labels: {hero_key: [HeroCareerStats, ...]} — preserves category/label order
+labeled = await client.get_player_career_stats_with_labels(
+    "TeKrop-2217", gamemode=PlayerGamemode.COMPETITIVE, hero=Hero.ANA,
+)
+for group in labeled["ana"]:
+    print(group.category, [(s.label, s.value) for s in group.stats])
+```
+
+`hero` accepts a `Hero` enum, the literal string `"all-heroes"` (aggregate across heroes), or `None` (all heroes, keyed individually).
+
+### Return types
+
+All responses are pydantic models — use your IDE's autocomplete, or see [overwatch_py/models/](overwatch_py/models/). Example for `get_player_summary`:
+
+```python
+summary = await client.get_player_summary("TeKrop-2217")
+summary.username                              # str
+summary.endorsement.level                     # int
+summary.competitive.pc.support.division       # Rank enum
+summary.competitive.pc.support.tier           # int
+```
+
+Available enums live in [overwatch_py/enums/](overwatch_py/enums/) (`Hero`, `Map`, `Role`, `Platform`, `Region`, `Locale`, `Rank`, `PlayerGamemode`, `HeroGamemode`, `MapGamemode`, `CompetitiveDivisionFilter`).
+
 ## Development
 
 ```bash
